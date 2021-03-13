@@ -1,13 +1,14 @@
 import unittest
 
-from cricket import Player, RandomNumberGenerator, Hitter, CricketGame, Defence
+from cricket import Player, RandomNumberGenerator, Hitter, CricketGame, Defence, NormalShotCompare, LazyShotCompare
 
 
 class CricketTestClass(unittest.TestCase):
     def test_game_play_logic(self):
         bats_man = Player("Batsman", RandomNumberGenerator())
         bowler = Player("Bowler", Hitter())
-        game = CricketGame(bats_man, bowler, 2, 10)
+        shot_compare = NormalShotCompare()
+        game = CricketGame(bats_man, bowler, 2, 10, shot_compare)
         game.play()
         self.assertTrue(game.has_won(), bats_man.get_total_score() >= 10)
 
@@ -32,6 +33,12 @@ class CricketTestClass(unittest.TestCase):
         defence = Player("Defence", Defence())
         score = defence.get_score()
         self.assertTrue(score in [0, 1, 2, 3] and score not in [4, 5, 6, 7, 8, 9, 10])
+
+    def test_compare_strategy(self):
+        shot_compare = NormalShotCompare()
+        lazy_shot_compare = LazyShotCompare()
+        self.assertTrue(shot_compare.compare(5, 5))
+        self.assertTrue(not lazy_shot_compare.compare(4, 9))
 
     if __name__ == '__main__':
         unittest.main()
